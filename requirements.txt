@@ -1,0 +1,7 @@
+pandas
+matplotlib
+scikit-learn
+openpyxl
+seaborn
+faker
+unidecode
