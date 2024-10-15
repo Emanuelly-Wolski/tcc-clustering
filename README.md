@@ -8,6 +8,7 @@ Repositório com a clusterização de alunos e professores com base nos dados de
 - **scripts/geracao-dados-testes**: Scripts Python para geração de dados aleatórios de alunos e professores.
 - **scripts/clusterizacao**: Scripts Python para clusterização de alunos e professores.
 - **requirements.txt**: Arquivo com as dependências necessárias para a execução do script.
+- **spring-clustering**: Contém a aplicação spring relacionada a clusterização.
 
 ## Execução do script de clusterização (caso queira testar)
 
