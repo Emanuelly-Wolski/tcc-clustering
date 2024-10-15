@@ -3,8 +3,8 @@ package com.clustering.clustering.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "preferencias_aluno")
-public class PreferenciasAluno {
+@Table(name = "preferencias_professor")
+public class PreferenciasProfessor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,23 +13,20 @@ public class PreferenciasAluno {
     @Column(name = "turno", nullable = false)
     private String turno;
 
+    @Column(name = "disponivel_orientacao", nullable = false)
+    private String disponivelOrientacao;
+
     @Column(name = "linguagens_programacao", nullable = true)
     private String linguagensProgramacao;  // Armazenado como string separada por vírgulas
 
-    @Column(name = "bancos_dados", nullable = true)
-    private String bancosDeDados;  
-
-    @Column(name = "nivel_experiencia", nullable = false)
-    private String nivelDeExperiencia;
+    @Column(name = "disciplinas_lecionadas", nullable = true)
+    private String disciplinasLecionadas;  
 
     @Column(name = "habilidades_pessoais", nullable = true)
-    private String habilidadesPessoais;  
+    private String habilidadesPessoais; 
 
     @Column(name = "temas_interesse", nullable = true)
-    private String temasDeInteresse;  
-
-    @Column(name = "framework_front", nullable = true)
-    private String frameworkFront;  
+    private String temasDeInteresse;
 
     @Column(name = "disponibilidade", nullable = false)
     private String disponibilidade;
@@ -54,6 +51,14 @@ public class PreferenciasAluno {
         this.turno = turno;
     }
 
+    public String getDisponivelOrientacao() {
+        return disponivelOrientacao;
+    }
+
+    public void setDisponivelOrientacao(String disponivelOrientacao) {
+        this.disponivelOrientacao = disponivelOrientacao;
+    }
+
     public String getLinguagensProgramacao() {
         return linguagensProgramacao;
     }
@@ -62,20 +67,12 @@ public class PreferenciasAluno {
         this.linguagensProgramacao = linguagensProgramacao;
     }
 
-    public String getBancosDeDados() {
-        return bancosDeDados;
+    public String getDisciplinasLecionadas() {
+        return disciplinasLecionadas;
     }
 
-    public void setBancosDeDados(String bancosDeDados) {
-        this.bancosDeDados = bancosDeDados;
-    }
-
-    public String getNivelDeExperiencia() {
-        return nivelDeExperiencia;
-    }
-
-    public void setNivelDeExperiencia(String nivelDeExperiencia) {
-        this.nivelDeExperiencia = nivelDeExperiencia;
+    public void setDisciplinasLecionadas(String disciplinasLecionadas) {
+        this.disciplinasLecionadas = disciplinasLecionadas;
     }
 
     public String getHabilidadesPessoais() {
@@ -92,14 +89,6 @@ public class PreferenciasAluno {
 
     public void setTemasDeInteresse(String temasDeInteresse) {
         this.temasDeInteresse = temasDeInteresse;
-    }
-
-    public String getFrameworkFront() {
-        return frameworkFront;
-    }
-
-    public void setFrameworkFront(String frameworkFront) {
-        this.frameworkFront = frameworkFront;
     }
 
     public String getDisponibilidade() {

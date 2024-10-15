@@ -1,7 +1,7 @@
 package com.clustering.clustering.controller;
 
-import com.clustering.clustering.model.PreferenciasAluno;
-import com.clustering.clustering.service.PreferenciasAlunoService;
+import com.clustering.clustering.model.PreferenciasProfessor;
+import com.clustering.clustering.service.PreferenciasProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/preferencias-aluno")
-public class PreferenciasAlunoController {
+@RequestMapping("/api/preferencias-professor")
+public class PreferenciasProfessorController {
 
     @Autowired
-    private PreferenciasAlunoService service;
+    private PreferenciasProfessorService service;
 
     @GetMapping
-    public List<PreferenciasAluno> listarTodos() {
+    public List<PreferenciasProfessor> listarTodos() {
         return service.listarTodos();
     }
 
     @PostMapping
-    public PreferenciasAluno salvar(@RequestBody PreferenciasAluno preferenciasAluno) {
-        return service.salvar(preferenciasAluno);
+    public PreferenciasProfessor salvar(@RequestBody PreferenciasProfessor preferenciasProfessor) {
+        return service.salvar(preferenciasProfessor);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PreferenciasAluno> buscarPorId(@PathVariable Long id) {
-        PreferenciasAluno aluno = service.buscarPorId(id);
-        if (aluno != null) {
-            return ResponseEntity.ok(aluno);
+    public ResponseEntity<PreferenciasProfessor> buscarPorId(@PathVariable Long id) {
+        PreferenciasProfessor professor = service.buscarPorId(id);
+        if (professor != null) {
+            return ResponseEntity.ok(professor);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
