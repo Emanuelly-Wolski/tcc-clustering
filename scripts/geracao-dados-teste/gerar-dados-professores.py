@@ -94,4 +94,4 @@ df_professores['Nome Completo'] = df_professores['Nome Completo'].str.replace(
     r'^(Sra\. |Srta\. |Dr\. |Dra\. |Sr\. )', '', regex=True)
 
 # Salvando o DataFrame em Excel na pasta 'dados'
-df_professores.to_excel('../../dados/professores.xlsx', index=False)
+df_professores.to_excel('../../dados-testes/professores.xlsx', index=False)

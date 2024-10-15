@@ -188,7 +188,7 @@ def exibir_alunos_compativeis(df, aluno_index, top_n=3):
 # ===========================
 
 def main():
-    caminho_arquivo = '../../dados/alunos.xlsx'
+    caminho_arquivo = '../../dados-testes/alunos.xlsx'
 
     # Carregamento e processamento dos dados
     df_alunos = carregar_dados(caminho_arquivo)

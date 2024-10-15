@@ -4,8 +4,8 @@ Repositório com a clusterização de alunos e professores com base nos dados de
 
 ## Estrutura do Repositório
 
-- **dados/**: Dados gerados com uso da biblioteca faker e random.choice do Python.
-- **scripts/geracao**: Scripts Python para geração de dados aleatórios de alunos e professores.
+- **dados-testes/**: Dados gerados com uso da biblioteca faker e random.choice do Python para os testes iniciais.
+- **scripts/geracao-dados-testes**: Scripts Python para geração de dados aleatórios de alunos e professores.
 - **scripts/clusterizacao**: Scripts Python para clusterização de alunos e professores.
 - **requirements.txt**: Arquivo com as dependências necessárias para a execução do script.
 

@@ -187,7 +187,7 @@ def exibir_professores_compativeis(df, aluno_index, top_n=3):
 # ===========================
 
 def main():
-    caminho_arquivo = '../../dados/professores.xlsx'
+    caminho_arquivo = '../../dados-testes/professores.xlsx'
 
     # Carregamento e processamento dos dados
     df_professores = carregar_dados(caminho_arquivo)

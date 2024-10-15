@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ClusteringApplication<clustering>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.clustering.clustering.ClusteringApplication",
+            "projectName": "clustering",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
