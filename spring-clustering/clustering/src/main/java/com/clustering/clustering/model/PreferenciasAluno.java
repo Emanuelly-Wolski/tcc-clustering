@@ -14,28 +14,59 @@ public class PreferenciasAluno {
     private String turno;
 
     @Column(name = "linguagens_programacao", nullable = true)
-    private String linguagensProgramacao;  // Armazenado como string separada por vírgulas
+    private String linguagensProgramacao; // Armazenado como string separada por vírgulas
 
     @Column(name = "bancos_dados", nullable = true)
-    private String bancosDeDados;  
+    private String bancosDeDados;
 
     @Column(name = "nivel_experiencia", nullable = false)
     private String nivelDeExperiencia;
 
     @Column(name = "habilidades_pessoais", nullable = true)
-    private String habilidadesPessoais;  
+    private String habilidadesPessoais;
 
     @Column(name = "temas_interesse", nullable = true)
-    private String temasDeInteresse;  
+    private String temasDeInteresse;
 
     @Column(name = "framework_front", nullable = true)
-    private String frameworkFront;  
+    private String frameworkFront;
 
     @Column(name = "disponibilidade", nullable = false)
     private String disponibilidade;
 
     @Column(name = "modalidade_trabalho", nullable = false)
     private String modalidadeTrabalho;
+
+    // Método para atualizar os campos de uma preferência
+    public void updateFrom(PreferenciasAluno updatedPreference) {
+        if (updatedPreference.getTurno() != null) {
+            this.turno = updatedPreference.getTurno();
+        }
+        if (updatedPreference.getLinguagensProgramacao() != null) {
+            this.linguagensProgramacao = updatedPreference.getLinguagensProgramacao();
+        }
+        if (updatedPreference.getBancosDeDados() != null) {
+            this.bancosDeDados = updatedPreference.getBancosDeDados();
+        }
+        if (updatedPreference.getNivelDeExperiencia() != null) {
+            this.nivelDeExperiencia = updatedPreference.getNivelDeExperiencia();
+        }
+        if (updatedPreference.getHabilidadesPessoais() != null) {
+            this.habilidadesPessoais = updatedPreference.getHabilidadesPessoais();
+        }
+        if (updatedPreference.getTemasDeInteresse() != null) {
+            this.temasDeInteresse = updatedPreference.getTemasDeInteresse();
+        }
+        if (updatedPreference.getFrameworkFront() != null) {
+            this.frameworkFront = updatedPreference.getFrameworkFront();
+        }
+        if (updatedPreference.getDisponibilidade() != null) {
+            this.disponibilidade = updatedPreference.getDisponibilidade();
+        }
+        if (updatedPreference.getModalidadeTrabalho() != null) {
+            this.modalidadeTrabalho = updatedPreference.getModalidadeTrabalho();
+        }
+    }
 
     // Getters e Setters
     public Long getId() {
