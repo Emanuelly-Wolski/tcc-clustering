@@ -1,6 +1,7 @@
 package com.clustering.clustering.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "preferencias_aluno")
@@ -13,29 +14,42 @@ public class PreferenciasAluno {
     @Column(name = "turno", nullable = false)
     private String turno;
 
-    @Column(name = "linguagens_programacao", nullable = true)
-    private String linguagensProgramacao; // Armazenado como string separada por vírgulas
+    @ElementCollection
+    @CollectionTable(name = "linguagens_programacao", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
+    @Column(name = "linguagem")
+    private List<String> linguagensProgramacao;
 
-    @Column(name = "bancos_dados", nullable = true)
-    private String bancosDeDados;
+    @ElementCollection
+    @CollectionTable(name = "bancos_dados", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
+    @Column(name = "banco")
+    private List<String> bancosDeDados;
 
     @Column(name = "nivel_experiencia", nullable = false)
     private String nivelDeExperiencia;
 
-    @Column(name = "habilidades_pessoais", nullable = true)
-    private String habilidadesPessoais;
+    @ElementCollection
+    @CollectionTable(name = "habilidades_pessoais", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
+    @Column(name = "habilidade")
+    private List<String> habilidadesPessoais;
 
-    @Column(name = "temas_interesse", nullable = true)
-    private String temasDeInteresse;
-
-    @Column(name = "framework_front", nullable = true)
-    private String frameworkFront;
+    @ElementCollection
+    @CollectionTable(name = "temas_interesse", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
+    @Column(name = "tema")
+    private List<String> temasDeInteresse;
 
     @Column(name = "disponibilidade", nullable = false)
     private String disponibilidade;
 
     @Column(name = "modalidade_trabalho", nullable = false)
     private String modalidadeTrabalho;
+
+    @ElementCollection
+    @CollectionTable(name = "framework_front", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
+    @Column(name = "framework")
+    private List<String> frameworkFront;
+
+    @Column(name = "user_id") // Agora opcional
+    private Long userId;
 
     // Método para atualizar os campos de uma preferência
     public void updateFrom(PreferenciasAluno updatedPreference) {
@@ -85,19 +99,19 @@ public class PreferenciasAluno {
         this.turno = turno;
     }
 
-    public String getLinguagensProgramacao() {
+    public List<String> getLinguagensProgramacao() {
         return linguagensProgramacao;
     }
 
-    public void setLinguagensProgramacao(String linguagensProgramacao) {
+    public void setLinguagensProgramacao(List<String> linguagensProgramacao) {
         this.linguagensProgramacao = linguagensProgramacao;
     }
 
-    public String getBancosDeDados() {
+    public List<String> getBancosDeDados() {
         return bancosDeDados;
     }
 
-    public void setBancosDeDados(String bancosDeDados) {
+    public void setBancosDeDados(List<String> bancosDeDados) {
         this.bancosDeDados = bancosDeDados;
     }
 
@@ -109,28 +123,20 @@ public class PreferenciasAluno {
         this.nivelDeExperiencia = nivelDeExperiencia;
     }
 
-    public String getHabilidadesPessoais() {
+    public List<String> getHabilidadesPessoais() {
         return habilidadesPessoais;
     }
 
-    public void setHabilidadesPessoais(String habilidadesPessoais) {
+    public void setHabilidadesPessoais(List<String> habilidadesPessoais) {
         this.habilidadesPessoais = habilidadesPessoais;
     }
 
-    public String getTemasDeInteresse() {
+    public List<String> getTemasDeInteresse() {
         return temasDeInteresse;
     }
 
-    public void setTemasDeInteresse(String temasDeInteresse) {
+    public void setTemasDeInteresse(List<String> temasDeInteresse) {
         this.temasDeInteresse = temasDeInteresse;
-    }
-
-    public String getFrameworkFront() {
-        return frameworkFront;
-    }
-
-    public void setFrameworkFront(String frameworkFront) {
-        this.frameworkFront = frameworkFront;
     }
 
     public String getDisponibilidade() {
@@ -147,5 +153,21 @@ public class PreferenciasAluno {
 
     public void setModalidadeTrabalho(String modalidadeTrabalho) {
         this.modalidadeTrabalho = modalidadeTrabalho;
+    }
+
+    public List<String> getFrameworkFront() {
+        return frameworkFront;
+    }
+
+    public void setFrameworkFront(List<String> frameworkFront) {
+        this.frameworkFront = frameworkFront;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
