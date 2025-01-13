@@ -17,12 +17,12 @@ public class PreferenciasAluno {
     @ElementCollection
     @CollectionTable(name = "linguagens_programacao", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "linguagem")
-    private List<String> linguagensProgramacao;
+    private List<String> linguagemProgramacao;
 
     @ElementCollection
     @CollectionTable(name = "bancos_dados", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "banco")
-    private List<String> bancosDeDados;
+    private List<String> bancoDeDados;
 
     @Column(name = "nivel_experiencia", nullable = false)
     private String nivelDeExperiencia;
@@ -48,19 +48,19 @@ public class PreferenciasAluno {
     @Column(name = "framework")
     private List<String> frameworkFront;
 
-    @Column(name = "user_id") // Agora opcional
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    // Método para atualizar os campos de uma preferência
+    // Método para atualizar os campos
     public void updateFrom(PreferenciasAluno updatedPreference) {
         if (updatedPreference.getTurno() != null) {
             this.turno = updatedPreference.getTurno();
         }
-        if (updatedPreference.getLinguagensProgramacao() != null) {
-            this.linguagensProgramacao = updatedPreference.getLinguagensProgramacao();
+        if (updatedPreference.getlinguagemProgramacao() != null) {
+            this.linguagemProgramacao = updatedPreference.getlinguagemProgramacao();
         }
-        if (updatedPreference.getBancosDeDados() != null) {
-            this.bancosDeDados = updatedPreference.getBancosDeDados();
+        if (updatedPreference.getbancoDeDados() != null) {
+            this.bancoDeDados = updatedPreference.getbancoDeDados();
         }
         if (updatedPreference.getNivelDeExperiencia() != null) {
             this.nivelDeExperiencia = updatedPreference.getNivelDeExperiencia();
@@ -99,20 +99,20 @@ public class PreferenciasAluno {
         this.turno = turno;
     }
 
-    public List<String> getLinguagensProgramacao() {
-        return linguagensProgramacao;
+    public List<String> getlinguagemProgramacao() {
+        return linguagemProgramacao;
     }
 
-    public void setLinguagensProgramacao(List<String> linguagensProgramacao) {
-        this.linguagensProgramacao = linguagensProgramacao;
+    public void setlinguagemProgramacao(List<String> linguagemProgramacao) {
+        this.linguagemProgramacao = linguagemProgramacao;
     }
 
-    public List<String> getBancosDeDados() {
-        return bancosDeDados;
+    public List<String> getbancoDeDados() {
+        return bancoDeDados;
     }
 
-    public void setBancosDeDados(List<String> bancosDeDados) {
-        this.bancosDeDados = bancosDeDados;
+    public void setbancoDeDados(List<String> bancoDeDados) {
+        this.bancoDeDados = bancoDeDados;
     }
 
     public String getNivelDeExperiencia() {

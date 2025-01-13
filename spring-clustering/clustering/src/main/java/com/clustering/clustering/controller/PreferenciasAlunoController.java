@@ -26,8 +26,14 @@ public class PreferenciasAlunoController {
 
     @PostMapping
     public ResponseEntity<PreferenciasAluno> createPreference(@RequestBody PreferenciasAluno preferenciasAluno) {
-        System.out.println("Payload recebido: " + preferenciasAluno);
 
+        System.out.println("Criando preferência...");
+        if (preferenciasAluno.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    
+        System.out.println("Payload recebido com userId: " + preferenciasAluno);
+    
         PreferenciasAluno createdPreference = service.salvar(preferenciasAluno);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPreference);
     }
