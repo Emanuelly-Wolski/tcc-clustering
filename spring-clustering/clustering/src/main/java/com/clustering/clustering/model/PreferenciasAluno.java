@@ -1,7 +1,9 @@
 package com.clustering.clustering.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.List;
+
 
 @Entity
 @Table(name = "preferencias_aluno")
@@ -48,6 +50,7 @@ public class PreferenciasAluno {
     @Column(name = "framework")
     private List<String> frameworkFront;
 
+    @JsonProperty("user_id") // Mapeia "user_id" do JSON para "userId" do modelo
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
