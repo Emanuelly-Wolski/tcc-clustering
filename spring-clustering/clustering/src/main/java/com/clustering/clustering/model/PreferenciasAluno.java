@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.List;
 
-
 @Entity
 @Table(name = "preferencias_aluno")
 public class PreferenciasAluno {
@@ -50,11 +49,18 @@ public class PreferenciasAluno {
     @Column(name = "framework")
     private List<String> frameworkFront;
 
-    @JsonProperty("user_id") // Mapeia "user_id" do JSON para "userId" do modelo
+    @JsonProperty("user_id")
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    // Método para atualizar os campos
+    // Novos campos para armazenar o nome e o email do usuário
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
+    // Método para atualizar os campos 
     public void updateFrom(PreferenciasAluno updatedPreference) {
         if (updatedPreference.getTurno() != null) {
             this.turno = updatedPreference.getTurno();
@@ -83,9 +89,16 @@ public class PreferenciasAluno {
         if (updatedPreference.getModalidadeTrabalho() != null) {
             this.modalidadeTrabalho = updatedPreference.getModalidadeTrabalho();
         }
+        if (updatedPreference.getUserName() != null) {
+            this.userName = updatedPreference.getUserName();
+        }
+        if (updatedPreference.getUserEmail() != null) {
+            this.userEmail = updatedPreference.getUserEmail();
+        }
     }
 
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -172,5 +185,21 @@ public class PreferenciasAluno {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }
