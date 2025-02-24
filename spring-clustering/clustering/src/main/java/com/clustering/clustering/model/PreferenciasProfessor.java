@@ -26,7 +26,7 @@ public class PreferenciasProfessor {
     private String habilidadesPessoais; 
 
     @Column(name = "temas_interesse", nullable = true)
-    private String temasDeInteresse;
+    private String temasInteresse;
 
     @Column(name = "disponibilidade", nullable = false)
     private String disponibilidade;
@@ -35,6 +35,7 @@ public class PreferenciasProfessor {
     private String modalidadeTrabalho;
 
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -83,12 +84,12 @@ public class PreferenciasProfessor {
         this.habilidadesPessoais = habilidadesPessoais;
     }
 
-    public String getTemasDeInteresse() {
-        return temasDeInteresse;
+    public String getTemasInteresse() {
+        return temasInteresse;
     }
 
-    public void setTemasDeInteresse(String temasDeInteresse) {
-        this.temasDeInteresse = temasDeInteresse;
+    public void setTemasInteresse(String temasInteresse) {
+        this.temasInteresse = temasInteresse;
     }
 
     public String getDisponibilidade() {
@@ -106,4 +107,33 @@ public class PreferenciasProfessor {
     public void setModalidadeTrabalho(String modalidadeTrabalho) {
         this.modalidadeTrabalho = modalidadeTrabalho;
     }
+
+    // Método para atualizar os campos
+    public void updateFrom(PreferenciasProfessor updated) {
+        if (updated.getTurno() != null) {
+            this.turno = updated.getTurno();
+        }
+        if (updated.getDisponivelOrientacao() != null) {
+            this.disponivelOrientacao = updated.getDisponivelOrientacao();
+        }
+        if (updated.getLinguagensProgramacao() != null) {
+            this.linguagensProgramacao = updated.getLinguagensProgramacao();
+        }
+        if (updated.getDisciplinasLecionadas() != null) {
+            this.disciplinasLecionadas = updated.getDisciplinasLecionadas();
+        }
+        if (updated.getHabilidadesPessoais() != null) {
+            this.habilidadesPessoais = updated.getHabilidadesPessoais();
+        }
+        if (updated.getTemasInteresse() != null) {
+            this.temasInteresse = updated.getTemasInteresse();
+        }
+        if (updated.getDisponibilidade() != null) {
+            this.disponibilidade = updated.getDisponibilidade();
+        }
+        if (updated.getModalidadeTrabalho() != null) {
+            this.modalidadeTrabalho = updated.getModalidadeTrabalho();
+        }
+    }
 }
+
