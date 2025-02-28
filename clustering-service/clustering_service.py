@@ -1,4 +1,4 @@
-# clustering-service.py
+# clustering_service.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
@@ -23,6 +23,7 @@ class MatchingRequest(BaseModel):
     userId: int
     students: List[Student]
 
+# Endpoint para obter sugestões para um usuário específico
 @app.post("/clustering")
 def get_matching(request: MatchingRequest):
     # Converte a lista de alunos para DataFrame
@@ -72,7 +73,7 @@ def get_matching(request: MatchingRequest):
     scaler = StandardScaler()
     df_normalized = scaler.fit_transform(df_features)
     
-    # Clusterização com KMeans (número fixo de clusters, ex.: 4)
+    # Clusterização com KMeans
     num_clusters = 4
     kmeans = KMeans(n_clusters=num_clusters, random_state=42)
     clusters = kmeans.fit_predict(df_normalized)
@@ -96,7 +97,7 @@ def get_matching(request: MatchingRequest):
     # Seleciona os 3 alunos com maior compatibilidade
     top_matches = same_cluster.sort_values(by="temasComuns", ascending=False).head(3)
     
-   # Renomeia as colunas para ficar compatível com o front-end
+    # Renomeia as colunas para ficar compatível com o front-end
     result = top_matches.rename(columns={
         'Nome Completo': 'userName',
         'Turno': 'turno',
@@ -105,3 +106,63 @@ def get_matching(request: MatchingRequest):
     })[['id', 'userName', 'email', 'turno', 'disponibilidade', 'temasDeInteresse']].to_dict(orient="records")
     
     return {"sugestoes": result}
+
+# Novo endpoint para clusterizar todos os alunos
+@app.post("/clustering/all")
+def cluster_all(request: MatchingRequest):
+    # Converte a lista de alunos para DataFrame
+    data = [student.dict() for student in request.students]
+    df = pd.DataFrame(data)
+    
+    if df.empty:
+        raise HTTPException(status_code=400, detail="Nenhum aluno fornecido")
+    
+    # Renomeia as colunas
+    df.rename(columns={
+        'nomeCompleto': 'Nome Completo',
+        'turno': 'Turno',
+        'disponibilidade': 'Disponibilidade',
+        'temasDeInteresse': 'Temas de Interesse'
+    }, inplace=True)
+    
+    # Vetorização dos temas de interesse
+    mlb = MultiLabelBinarizer()
+    temas_dummies = pd.DataFrame(
+        mlb.fit_transform(df['Temas de Interesse']),
+        columns=mlb.classes_,
+        index=df.index
+    )
+    
+    # One-Hot Encoding para 'Turno'
+    ohe = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+    turno_encoded = ohe.fit_transform(df[['Turno']])
+    turno_dummies = pd.DataFrame(
+        turno_encoded,
+        columns=ohe.get_feature_names_out(['Turno']),
+        index=df.index
+    )
+    
+    # One-Hot Encoding para 'Disponibilidade'
+    disponibilidade_encoded = ohe.fit_transform(df[['Disponibilidade']])
+    disponibilidade_dummies = pd.DataFrame(
+        disponibilidade_encoded,
+        columns=ohe.get_feature_names_out(['Disponibilidade']),
+        index=df.index
+    )
+    
+    # Concatena todas as features
+    df_features = pd.concat([temas_dummies, turno_dummies, disponibilidade_dummies], axis=1)
+    
+    # Normalização dos dados
+    scaler = StandardScaler()
+    df_normalized = scaler.fit_transform(df_features)
+    
+    # Clusterização com KMeans (número fixo de clusters)
+    num_clusters = 4
+    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+    clusters = kmeans.fit_predict(df_normalized)
+    df['cluster'] = clusters
+    
+    # Retorna o mapeamento de cada aluno com seu id e cluster
+    result = df[['id', 'cluster']].to_dict(orient="records")
+    return {"clusters": result}

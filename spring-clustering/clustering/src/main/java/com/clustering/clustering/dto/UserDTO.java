@@ -6,13 +6,15 @@ public class UserDTO {
     
     private String name;
     private String email;
+    private String role; // Agora como String
 
     public UserDTO() {
     }
 
-    public UserDTO(String name, String email) {
+    public UserDTO(String name, String email, String role) {
         this.name = name;
         this.email = email;
+        this.role = role;
     }
 
     @JsonProperty("name")
@@ -25,11 +27,20 @@ public class UserDTO {
         return email;
     }
 
+    @JsonProperty("role")
+    public String getRole() {
+        return role;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
