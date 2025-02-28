@@ -1,5 +1,7 @@
 package com.clustering.clustering.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,16 +19,16 @@ public class PreferenciasProfessor {
     private String disponivelOrientacao;
 
     @Column(name = "linguagens_programacao", nullable = true)
-    private String linguagensProgramacao;  // Armazenado como string separada por vírgulas
+    private String linguagensProgramacao; // Armazenado como string separada por vírgulas
 
     @Column(name = "disciplinas_lecionadas", nullable = true)
-    private String disciplinasLecionadas;  
+    private String disciplinasLecionadas;
 
     @Column(name = "habilidades_pessoais", nullable = true)
-    private String habilidadesPessoais; 
+    private String habilidadesPessoais;
 
     @Column(name = "temas_interesse", nullable = true)
-    private String temasDeInteresse;
+    private String temasInteresse;
 
     @Column(name = "disponibilidade", nullable = false)
     private String disponibilidade;
@@ -34,7 +36,19 @@ public class PreferenciasProfessor {
     @Column(name = "modalidade_trabalho", nullable = false)
     private String modalidadeTrabalho;
 
+    // NOVOS CAMPOS para identificar o professor
+    @JsonProperty("user_id")
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -83,12 +97,12 @@ public class PreferenciasProfessor {
         this.habilidadesPessoais = habilidadesPessoais;
     }
 
-    public String getTemasDeInteresse() {
-        return temasDeInteresse;
+    public String getTemasInteresse() {
+        return temasInteresse;
     }
 
-    public void setTemasDeInteresse(String temasDeInteresse) {
-        this.temasDeInteresse = temasDeInteresse;
+    public void setTemasInteresse(String temasInteresse) {
+        this.temasInteresse = temasInteresse;
     }
 
     public String getDisponibilidade() {
@@ -105,5 +119,66 @@ public class PreferenciasProfessor {
 
     public void setModalidadeTrabalho(String modalidadeTrabalho) {
         this.modalidadeTrabalho = modalidadeTrabalho;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    // Método para atualizar os campos
+    public void updateFrom(PreferenciasProfessor updated) {
+        if (updated.getTurno() != null) {
+            this.turno = updated.getTurno();
+        }
+        if (updated.getDisponivelOrientacao() != null) {
+            this.disponivelOrientacao = updated.getDisponivelOrientacao();
+        }
+        if (updated.getLinguagensProgramacao() != null) {
+            this.linguagensProgramacao = updated.getLinguagensProgramacao();
+        }
+        if (updated.getDisciplinasLecionadas() != null) {
+            this.disciplinasLecionadas = updated.getDisciplinasLecionadas();
+        }
+        if (updated.getHabilidadesPessoais() != null) {
+            this.habilidadesPessoais = updated.getHabilidadesPessoais();
+        }
+        if (updated.getTemasInteresse() != null) {
+            this.temasInteresse = updated.getTemasInteresse();
+        }
+        if (updated.getDisponibilidade() != null) {
+            this.disponibilidade = updated.getDisponibilidade();
+        }
+        if (updated.getModalidadeTrabalho() != null) {
+            this.modalidadeTrabalho = updated.getModalidadeTrabalho();
+        }
+        if (updated.getUserId() != null) {
+            this.userId = updated.getUserId();
+        }
+        if (updated.getUserName() != null) {
+            this.userName = updated.getUserName();
+        }
+        if (updated.getUserEmail() != null) {
+            this.userEmail = updated.getUserEmail();
+        }
     }
 }

@@ -4,7 +4,6 @@ import com.clustering.clustering.model.PreferenciasProfessor;
 import com.clustering.clustering.repository.PreferenciasProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -29,3 +28,4 @@ public class PreferenciasProfessorService {
         repository.deleteById(id);
     }
 }
+
