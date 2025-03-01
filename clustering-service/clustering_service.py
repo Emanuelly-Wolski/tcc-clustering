@@ -80,7 +80,7 @@ def get_matching(request: MatchingRequest):
     clusters = kmeans.fit_predict(df_normalized)
     df['cluster'] = clusters
     
-    # Encontrar o cluster do usuário logado
+    # Encontra o cluster do usuário logado
     user_df = df[df['id'] == request.userId]
     if user_df.empty:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")

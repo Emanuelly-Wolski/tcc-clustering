@@ -6,7 +6,7 @@ public class UserDTO {
     
     private String name;
     private String email;
-    private String role; // Role como String
+    private String role; 
 
     public UserDTO() { }
 

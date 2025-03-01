@@ -54,7 +54,6 @@ public class ClusteringController {
             map.put("turno", pref.getTurno());
             map.put("disponibilidade", pref.getDisponibilidade());
             map.put("temasDeInteresse", pref.getTemasDeInteresse());
-            // Não definimos a role aqui; ela será obtida da tabela cluster
             return map;
         }).collect(Collectors.toList());
 
@@ -76,7 +75,7 @@ public class ClusteringController {
         ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl, requestEntity, Map.class);
         Map responseBody = response.getBody();
 
-        // Enriquecer cada sugestão com a role presente na tabela cluster
+        // Enriquece com a role presente na tabela cluster
         List<Map<String, Object>> sugestoes = (List<Map<String, Object>>) responseBody.get("sugestoes");
         for (Map<String, Object> sugestao : sugestoes) {
             Long uid = ((Number) sugestao.get("id")).longValue();
@@ -114,7 +113,6 @@ public class ClusteringController {
             map.put("turno", pref.getTurno());
             map.put("disponibilidade", pref.getDisponibilidade());
             map.put("temasDeInteresse", pref.getTemasDeInteresse());
-            // Não definimos a role aqui; ela será obtida via microserviço de login
             return map;
         }).collect(Collectors.toList());
         
@@ -143,7 +141,7 @@ public class ClusteringController {
             int clusterNumber = ((Number) map.get("cluster")).intValue();
 
             // Busca a role do usuário no microserviço de login
-            String role = null; // Não forçamos valor padrão
+            String role = null;
             HttpHeaders authHeaders = new HttpHeaders();
             if (token != null && !token.isEmpty()){
                 authHeaders.set("Authorization", token);
@@ -180,7 +178,7 @@ public class ClusteringController {
             c.setUserRole(role);
             clustersToSave.add(c);
         }
-        // 6. Salva (cria ou atualiza) os registros na tabela "cluster"
+        // 6. Salva (cria ou atualiza) os registros na tabela cluster
         clusterService.saveAll(clustersToSave);
         return ResponseEntity.ok("Clusters atualizados com sucesso");
     }
