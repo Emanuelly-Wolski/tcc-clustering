@@ -6,10 +6,9 @@ public class UserDTO {
     
     private String name;
     private String email;
-    private String role; // Agora como String
+    private String role; 
 
-    public UserDTO() {
-    }
+    public UserDTO() { }
 
     public UserDTO(String name, String email, String role) {
         this.name = name;

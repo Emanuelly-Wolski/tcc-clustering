@@ -39,7 +39,9 @@ public class ClusteringController {
 
     /**
      * Endpoint para obter sugestões para um usuário específico.
-     * Também envia o token no header para o serviço Python.
+     * Após receber as sugestões do serviço Python, para cada perfil
+     * é consultada a tabela cluster para obter a role armazenada. Em seguida,
+     * são filtradas as sugestões, retornando apenas perfis com role "aluno".
      */
     @GetMapping("/sugeridos/{userId}")
     public ResponseEntity<?> getclustering(@PathVariable Long userId) {
@@ -64,16 +66,32 @@ public class ClusteringController {
 
         // Pega o token exatamente como chega do front
         String token = httpServletRequest.getHeader("Authorization");
-        if (token != null && !token.isEmpty()) {
+        if (token != null && !token.isEmpty()){
             headers.set("Authorization", token);
         }
-
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(payload, headers);
 
         // Faz a requisição ao serviço Python (endpoint /clustering)
         ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl, requestEntity, Map.class);
+        Map responseBody = response.getBody();
 
-        return ResponseEntity.ok(response.getBody());
+        // Enriquece com a role presente na tabela cluster
+        List<Map<String, Object>> sugestoes = (List<Map<String, Object>>) responseBody.get("sugestoes");
+        for (Map<String, Object> sugestao : sugestoes) {
+            Long uid = ((Number) sugestao.get("id")).longValue();
+            Optional<Cluster> clusterOpt = clusterService.findByUserId(uid);
+            if (clusterOpt.isPresent()){
+                sugestao.put("userRole", clusterOpt.get().getUserRole());
+            }
+        }
+        // Filtra as sugestões para retornar apenas perfis com role igual a "aluno"
+        List<Map<String, Object>> filteredSugestoes = sugestoes.stream()
+                .filter(s -> s.containsKey("userRole") && 
+                             s.get("userRole") != null &&
+                             "aluno".equalsIgnoreCase(s.get("userRole").toString()))
+                .collect(Collectors.toList());
+        responseBody.put("sugestoes", filteredSugestoes);
+        return ResponseEntity.ok(responseBody);
     }
     
     /**
@@ -104,12 +122,10 @@ public class ClusteringController {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         String token = httpServletRequest.getHeader("Authorization");
-        if (token != null && !token.isEmpty()) {
+        if (token != null && !token.isEmpty()){
             headers.set("Authorization", token);
         }
-
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(payload, headers);
         
         // 3. Chama o endpoint do serviço Python ("/all")
@@ -120,19 +136,17 @@ public class ClusteringController {
         
         // 5. Para cada registro, criar ou atualizar Cluster, ignorando admins
         List<Cluster> clustersToSave = new ArrayList<>();
-
         for (Map<String, Object> map : clustersData) {
             Long uid = ((Number) map.get("id")).longValue();
             int clusterNumber = ((Number) map.get("cluster")).intValue();
 
             // Busca a role do usuário no microserviço de login
-            String role = "desconhecido";
+            String role = null;
             HttpHeaders authHeaders = new HttpHeaders();
-            if (token != null && !token.isEmpty()) {
+            if (token != null && !token.isEmpty()){
                 authHeaders.set("Authorization", token);
             }
             HttpEntity<String> authEntity = new HttpEntity<>(authHeaders);
-
             try {
                 ResponseEntity<UserDTO> userResponse = restTemplate.exchange(
                     userServiceUrl + uid,
@@ -141,37 +155,18 @@ public class ClusteringController {
                     UserDTO.class
                 );
                 if (userResponse.getStatusCode().is2xxSuccessful() && userResponse.getBody() != null) {
-                    String roleString = userResponse.getBody().getRole();
-                    if (roleString != null) {
-                        switch (roleString.toUpperCase()) {
-                            case "ALUNO":
-                                role = "aluno";
-                                break;
-                            case "PROFESSOR":
-                                role = "professor";
-                                break;
-                            case "ADMIN":
-                                role = "admin";
-                                break;
-                            default:
-                                role = "desconhecido";
-                                break;
-                        }
-                    }
+                    role = userResponse.getBody().getRole();
                 }
             } catch (Exception e) {
-                // role permanece "desconhecido"
+                // role permanece null se a consulta falhar
             }
-
             // Ignora se for admin
-            if ("admin".equalsIgnoreCase(role)) {
-                continue; 
+            if (role != null && "ADMIN".equalsIgnoreCase(role)) {
+                continue;
             }
-
-            // Verifica se já existe registro para esse userId
             Optional<Cluster> existingOpt = clusterService.findByUserId(uid);
             Cluster c;
-            if (existingOpt.isPresent()) {
+            if (existingOpt.isPresent()){
                 // Atualiza o registro existente
                 c = existingOpt.get();
             } else {
@@ -179,14 +174,11 @@ public class ClusteringController {
                 c = new Cluster();
                 c.setUserId(uid);
             }
-
             c.setClusterId(clusterNumber);
             c.setUserRole(role);
-
             clustersToSave.add(c);
         }
-        
-        // 6. Salvar (criar ou atualizar) todos os registros na tabela "cluster"
+        // 6. Salva (cria ou atualiza) os registros na tabela cluster
         clusterService.saveAll(clustersToSave);
         return ResponseEntity.ok("Clusters atualizados com sucesso");
     }
