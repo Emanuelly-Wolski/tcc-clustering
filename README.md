@@ -1,17 +1,19 @@
-## Clusterização
+# TCC Clustering
 
-Repositório com a clusterização de alunos e professores com base nos dados de preferências dos usuários.
+_Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso do TADS - UFPR 2025._
 
-## Estrutura do Repositório
+O objetivo é agrupar perfis semelhantes com base em critérios como temas de interesse, turno e disponibilidade, utilizando técnicas de machine learning (Clusterização) para facilitar a formação de equipes compatíveis.
 
-- **dados-testes/**: Dados gerados com uso da biblioteca faker e random.choice do Python para os testes iniciais.
-- **scripts/geracao-dados-testes**: Scripts Python para geração de dados aleatórios de alunos e professores.
-- **scripts/clusterizacao**: Scripts Python para clusterização de alunos e professores.
-- **requirements.txt**: Arquivo com as dependências necessárias para a execução do script.
-- **spring-clustering**: Contém a aplicação spring relacionada a clusterização.
+## Tecnologias Utilizadas
+* Java + Spring Boot – Backend principal
+* Python + FastAPI – Serviço de clusterização
+* React, Material-UI - Frontend
+* PostgreSQL – Banco de dados relacional
+* K-Means – Algoritmo de clusterização
 
-## Execução do script de clusterização (caso queira testar)
-
-1. Instale as dependências na raiz do projeto com: : pip install -r requirements.txt <br>
-2. Navegue até a pasta do script .py usando o comando cd; <br>
-3. Em seguida, execute da seguinte forma: python clusterizacao_alunos.py
+## Como Funciona
+* O usuário preenche suas preferências no sistema.
+* Ao buscar por perfis compatíveis, os dados são enviados para o serviço de clusterização.
+* O algoritmo K-Means agrupa os usuários com base nas semelhanças.
+* O sistema retorna os 3 perfis mais compatíveis com o usuário logado.
+* Os clusters também são salvos em uma tabela específica para futuras análises.
