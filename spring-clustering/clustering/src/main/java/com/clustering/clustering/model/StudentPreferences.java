@@ -1,12 +1,13 @@
 package com.clustering.clustering.model;
 
+import com.clustering.clustering.repository.TeacherPreferencesRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "preferencias_aluno")
-public class PreferenciasAluno {
+public class StudentPreferences {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +62,7 @@ public class PreferenciasAluno {
     private String userEmail;
 
     // Método para atualizar os campos 
-    public void updateFrom(PreferenciasAluno updatedPreference) {
+    public void updateFrom(StudentPreferences updatedPreference) {
         if (updatedPreference.getTurno() != null) {
             this.turno = updatedPreference.getTurno();
         }

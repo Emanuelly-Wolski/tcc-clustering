@@ -1,9 +1,9 @@
 package com.clustering.clustering.dto;
 
 import java.util.List;
-import com.clustering.clustering.model.PreferenciasAluno;
+import com.clustering.clustering.model.StudentPreferences;
 
-public record PreferenciasAlunoResponseDTO(
+public record SudentPreferencesResponseDTO(
     Long id,
     String turno,
     List<String> linguagemProgramacao,
@@ -19,10 +19,10 @@ public record PreferenciasAlunoResponseDTO(
     String emailUsuario
 ) {
     /**
-     * Construtor que mapeia PreferenciasAluno e adiciona
+     * Construtor que mapeia StudentPreferences e adiciona
      * os dados do usuário (nome e email) obtidos do microserviço de login
      */
-    public PreferenciasAlunoResponseDTO(PreferenciasAluno pref, String nomeUsuario, String emailUsuario) {
+    public SudentPreferencesResponseDTO(StudentPreferences pref, String nomeUsuario, String emailUsuario) {
         this(
             pref.getId(),
             pref.getTurno(),

@@ -2,7 +2,7 @@ package com.clustering.clustering.dto;
 
 import java.util.List;
 
-public record PreferenciasAlunoRequestDTO(
+public record SudentPreferencesRequestDTO(
     String turno,
     List<String> linguagemProgramacao,
     List<String> bancoDeDados,

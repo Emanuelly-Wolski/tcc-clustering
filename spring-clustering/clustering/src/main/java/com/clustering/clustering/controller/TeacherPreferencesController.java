@@ -1,8 +1,8 @@
 package com.clustering.clustering.controller;
 
 import com.clustering.clustering.dto.UserDTO;
-import com.clustering.clustering.model.PreferenciasProfessor;
-import com.clustering.clustering.service.PreferenciasProfessorService;
+import com.clustering.clustering.model.TeacherPreferences;
+import com.clustering.clustering.service.TeacherPreferencesService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -17,10 +17,10 @@ import java.util.Optional;
 @RequestMapping("preferencias-professor")
 @CrossOrigin(origins = "*", allowedHeaders = "*", 
              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-public class PreferenciasProfessorController {
+public class TeacherPreferencesController {
 
     @Autowired
-    private PreferenciasProfessorService service;
+    private TeacherPreferencesService service;
     
     @Autowired
     private RestTemplate restTemplate;
@@ -34,7 +34,7 @@ public class PreferenciasProfessorController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         try {
-            List<PreferenciasProfessor> list = service.listarTodos();
+            List<TeacherPreferences> list = service.listarTodos();
             return ResponseEntity.ok(list);
         } catch(Exception e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class PreferenciasProfessorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createPreference(@RequestBody PreferenciasProfessor pref) {
+    public ResponseEntity<?> createPreference(@RequestBody TeacherPreferences pref) {
         try {
             if (pref.getUserId() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -65,7 +65,7 @@ public class PreferenciasProfessorController {
             pref.setUserName(user.getName());
             pref.setUserEmail(user.getEmail());
             
-            PreferenciasProfessor created = service.salvar(pref);
+            TeacherPreferences created = service.salvar(pref);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch(Exception e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class PreferenciasProfessorController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPreferenceById(@PathVariable Long id) {
         try {
-            Optional<PreferenciasProfessor> existing = Optional.ofNullable(service.buscarPorId(id));
+            Optional<TeacherPreferences> existing = Optional.ofNullable(service.buscarPorId(id));
             if(existing.isPresent()) {
                 return ResponseEntity.ok(existing.get());
             } else {
@@ -92,9 +92,9 @@ public class PreferenciasProfessorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePreference(@PathVariable Long id, @RequestBody PreferenciasProfessor updatedPref) {
+    public ResponseEntity<?> updatePreference(@PathVariable Long id, @RequestBody TeacherPreferences updatedPref) {
         try {
-            PreferenciasProfessor existing = service.buscarPorId(id);
+            TeacherPreferences existing = service.buscarPorId(id);
             if(existing != null) {
                 existing.updateFrom(updatedPref);
 
@@ -109,7 +109,7 @@ public class PreferenciasProfessorController {
                     existing.setUserName(user.getName());
                     existing.setUserEmail(user.getEmail());
                 }
-                PreferenciasProfessor saved = service.salvar(existing);
+                TeacherPreferences saved = service.salvar(existing);
                 return ResponseEntity.ok(saved);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -125,7 +125,7 @@ public class PreferenciasProfessorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePreference(@PathVariable Long id) {
         try {
-            PreferenciasProfessor existing = service.buscarPorId(id);
+            TeacherPreferences existing = service.buscarPorId(id);
             if(existing != null) {
                 service.deletar(id);
                 return ResponseEntity.noContent().build();

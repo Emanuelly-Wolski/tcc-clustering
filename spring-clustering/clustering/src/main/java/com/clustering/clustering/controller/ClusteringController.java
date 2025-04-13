@@ -2,11 +2,11 @@ package com.clustering.clustering.controller;
 
 import com.clustering.clustering.dto.UserDTO;
 import com.clustering.clustering.model.Cluster;
-import com.clustering.clustering.model.PreferenciasAluno;
-import com.clustering.clustering.model.PreferenciasProfessor;
+import com.clustering.clustering.model.StudentPreferences;
+import com.clustering.clustering.model.TeacherPreferences;
 import com.clustering.clustering.service.ClusterService;
-import com.clustering.clustering.service.PreferenciasAlunoService;
-import com.clustering.clustering.service.PreferenciasProfessorService;
+import com.clustering.clustering.service.StudentPreferencesService;
+import com.clustering.clustering.service.TeacherPreferencesService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Arrays;
+
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
@@ -23,10 +23,10 @@ import org.springframework.web.client.HttpClientErrorException;
 public class ClusteringController {
 
     @Autowired
-    private PreferenciasAlunoService preferenciasAlunoService;
+    private StudentPreferencesService preferenciasAlunoService;
 
     @Autowired
-    private PreferenciasProfessorService preferenciasProfessorService;
+    private TeacherPreferencesService preferenciasProfessorService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -57,7 +57,7 @@ public class ClusteringController {
         List<Map<String, Object>> profiles;
         if (targetRole.equalsIgnoreCase("professor")) {
             // Obtém os candidatos a professor da tabela de preferências de professor
-            List<PreferenciasProfessor> allProfessorPrefs = preferenciasProfessorService.listarTodos();
+            List<TeacherPreferences> allProfessorPrefs = preferenciasProfessorService.listarTodos();
             List<Map<String, Object>> professorCandidates = allProfessorPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
@@ -78,14 +78,14 @@ public class ClusteringController {
             }).collect(Collectors.toList());
 
             // Obtém o registro do usuário logado (aluno) da tabela de preferências de aluno
-            List<PreferenciasAluno> allAlunoPrefs = preferenciasAlunoService.listarTodos();
-            Optional<PreferenciasAluno> userAlunoOpt = allAlunoPrefs.stream()
+            List<StudentPreferences> allAlunoPrefs = preferenciasAlunoService.listarTodos();
+            Optional<StudentPreferences> userAlunoOpt = allAlunoPrefs.stream()
                     .filter(pref -> pref.getUserId() == userId)
                     .findFirst();
             if (!userAlunoOpt.isPresent()) {
                 throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
             }
-            PreferenciasAluno userAluno = userAlunoOpt.get();
+            StudentPreferences userAluno = userAlunoOpt.get();
             Map<String, Object> userRecord = new HashMap<>();
             userRecord.put("id", userAluno.getUserId());
             userRecord.put("nomeCompleto", userAluno.getUserName());
@@ -99,7 +99,7 @@ public class ClusteringController {
             profiles.add(userRecord);
         } else {
             // Caso targetRole seja "aluno", usa as preferências de aluno
-            List<PreferenciasAluno> allPrefs = preferenciasAlunoService.listarTodos();
+            List<StudentPreferences> allPrefs = preferenciasAlunoService.listarTodos();
             profiles = allPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
@@ -153,7 +153,7 @@ public class ClusteringController {
     public ResponseEntity<?> atualizarClusters(@RequestParam(name="targetRole", defaultValue="aluno") String targetRole) {
         List<Map<String, Object>> profiles;
         if (targetRole.equalsIgnoreCase("professor")) {
-            List<PreferenciasProfessor> allPrefs = preferenciasProfessorService.listarTodos();
+            List<TeacherPreferences> allPrefs = preferenciasProfessorService.listarTodos();
             profiles = allPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
@@ -173,7 +173,7 @@ public class ClusteringController {
                 return map;
             }).collect(Collectors.toList());
         } else {
-            List<PreferenciasAluno> allPrefs = preferenciasAlunoService.listarTodos();
+            List<StudentPreferences> allPrefs = preferenciasAlunoService.listarTodos();
             profiles = allPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());

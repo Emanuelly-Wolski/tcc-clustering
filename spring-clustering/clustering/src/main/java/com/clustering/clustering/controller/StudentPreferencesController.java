@@ -1,8 +1,9 @@
 package com.clustering.clustering.controller;
 
 import com.clustering.clustering.dto.UserDTO;
-import com.clustering.clustering.model.PreferenciasAluno;
-import com.clustering.clustering.service.PreferenciasAlunoService;
+import com.clustering.clustering.model.StudentPreferences;
+import com.clustering.clustering.service.StudentPreferencesService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -17,10 +18,10 @@ import java.util.Optional;
 @RequestMapping("preferencias-aluno")
 @CrossOrigin(origins = "*", allowedHeaders = "*", 
              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-public class PreferenciasAlunoController {
+public class StudentPreferencesController {
 
     @Autowired
-    private PreferenciasAlunoService service;
+    private StudentPreferencesService service;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -37,7 +38,7 @@ public class PreferenciasAlunoController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         try {
-            List<PreferenciasAluno> preferencesList = service.listarTodos();
+            List<StudentPreferences> preferencesList = service.listarTodos();
             return ResponseEntity.ok(preferencesList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +52,7 @@ public class PreferenciasAlunoController {
      * Busca os dados do usuário (nome e email) usando o token recebido no header
      */
     @PostMapping
-    public ResponseEntity<?> createPreference(@RequestBody PreferenciasAluno preferenciasAluno) {
+    public ResponseEntity<?> createPreference(@RequestBody StudentPreferences preferenciasAluno) {
         try {
             System.out.println("Criando preferência com dados: " + preferenciasAluno);
             
@@ -74,7 +75,7 @@ public class PreferenciasAlunoController {
             preferenciasAluno.setUserName(user.getName());
             preferenciasAluno.setUserEmail(user.getEmail());
             
-            PreferenciasAluno createdPreference = service.salvar(preferenciasAluno);
+            StudentPreferences createdPreference = service.salvar(preferenciasAluno);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPreference);
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,7 +90,7 @@ public class PreferenciasAlunoController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPreferenceById(@PathVariable Long id) {
         try {
-            Optional<PreferenciasAluno> existingPreference = Optional.ofNullable(service.buscarPorId(id));
+            Optional<StudentPreferences> existingPreference = Optional.ofNullable(service.buscarPorId(id));
             if (existingPreference.isPresent()) {
                 return ResponseEntity.ok(existingPreference.get());
             } else {
@@ -109,11 +110,11 @@ public class PreferenciasAlunoController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePreference(
             @PathVariable Long id,
-            @RequestBody PreferenciasAluno updatedPreference) {
+            @RequestBody StudentPreferences updatedPreference) {
         try {
-            Optional<PreferenciasAluno> existingPreferenceOptional = Optional.ofNullable(service.buscarPorId(id));
+            Optional<StudentPreferences> existingPreferenceOptional = Optional.ofNullable(service.buscarPorId(id));
             if (existingPreferenceOptional.isPresent()) {
-                PreferenciasAluno existingPreference = existingPreferenceOptional.get();
+                StudentPreferences existingPreference = existingPreferenceOptional.get();
                 existingPreference.updateFrom(updatedPreference);
                 
                 if (updatedPreference.getUserId() != null) {
@@ -128,7 +129,7 @@ public class PreferenciasAlunoController {
                     existingPreference.setUserId(updatedPreference.getUserId());
                 }
                 
-                PreferenciasAluno savedPreference = service.salvar(existingPreference);
+                StudentPreferences savedPreference = service.salvar(existingPreference);
                 return ResponseEntity.ok(savedPreference);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -147,7 +148,7 @@ public class PreferenciasAlunoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePreference(@PathVariable Long id) {
         try {
-            Optional<PreferenciasAluno> existingPreference = Optional.ofNullable(service.buscarPorId(id));
+            Optional<StudentPreferences> existingPreference = Optional.ofNullable(service.buscarPorId(id));
             if (existingPreference.isPresent()) {
                 service.deletar(id);
                 return ResponseEntity.noContent().build();
