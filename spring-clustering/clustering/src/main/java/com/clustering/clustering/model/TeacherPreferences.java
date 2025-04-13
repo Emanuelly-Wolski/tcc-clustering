@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "preferencias_professor")
-public class PreferenciasProfessor {
+public class TeacherPreferences {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -146,7 +146,7 @@ public class PreferenciasProfessor {
     }
 
     // Método para atualizar os campos
-    public void updateFrom(PreferenciasProfessor updated) {
+    public void updateFrom(TeacherPreferences updated) {
         if (updated.getTurno() != null) {
             this.turno = updated.getTurno();
         }
