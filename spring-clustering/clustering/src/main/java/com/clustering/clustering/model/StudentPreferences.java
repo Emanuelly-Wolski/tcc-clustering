@@ -1,6 +1,5 @@
 package com.clustering.clustering.model;
 
-import com.clustering.clustering.repository.TeacherPreferencesRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.List;

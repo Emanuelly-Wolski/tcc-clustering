@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.clustering.clustering.service.StudentPreferencesService;
-import com.clustering.clustering.service.TeacherPreferencesService;
+import com.clustering.clustering.service.ProfessorPreferencesService;
 
 @RestController
 @RequestMapping("/users")
@@ -15,7 +15,7 @@ public class UserSyncController {
     private StudentPreferencesService alunoService;
 
     @Autowired
-    private TeacherPreferencesService professorService;
+    private ProfessorPreferencesService professorService;
 
     @DeleteMapping("/remove-preferences/{userId}")
     public ResponseEntity<Void> removeUserPreferences(@PathVariable Long userId) {

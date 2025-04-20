@@ -1,12 +1,13 @@
+// ClusteringController.java
 package com.clustering.clustering.controller;
 
 import com.clustering.clustering.dto.UserDTO;
 import com.clustering.clustering.model.Cluster;
 import com.clustering.clustering.model.StudentPreferences;
-import com.clustering.clustering.model.TeacherPreferences;
+import com.clustering.clustering.model.ProfessorPreferences;
 import com.clustering.clustering.service.ClusterService;
 import com.clustering.clustering.service.StudentPreferencesService;
-import com.clustering.clustering.service.TeacherPreferencesService;
+import com.clustering.clustering.service.ProfessorPreferencesService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -15,18 +16,16 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.web.client.HttpClientErrorException;
-
 @RestController
 @RequestMapping("/clustering")
 @CrossOrigin(origins = "*")
 public class ClusteringController {
 
     @Autowired
-    private StudentPreferencesService preferenciasAlunoService;
+    private StudentPreferencesService studentPreferencesService;
 
     @Autowired
-    private TeacherPreferencesService preferenciasProfessorService;
+    private ProfessorPreferencesService professorPreferencesService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -49,58 +48,48 @@ public class ClusteringController {
      * Como o aluno é quem realiza a busca, seu registro (da tabela de preferências de aluno) é adicionado à lista,
      * permitindo que o algoritmo de clusterização identifique seu cluster.
      */
-    @GetMapping("/sugeridos/{userId}")
-    public ResponseEntity<?> getclustering(
+    @GetMapping("/suggestions/{userId}")
+    public ResponseEntity<?> getSuggestions(
             @PathVariable Long userId,
             @RequestParam(name="targetRole", defaultValue="aluno") String targetRole) {
 
         List<Map<String, Object>> profiles;
         if (targetRole.equalsIgnoreCase("professor")) {
             // Obtém os candidatos a professor da tabela de preferências de professor
-            List<TeacherPreferences> allProfessorPrefs = preferenciasProfessorService.listarTodos();
-            List<Map<String, Object>> professorCandidates = allProfessorPrefs.stream().map(pref -> {
+            List<ProfessorPreferences> professorPrefs = professorPreferencesService.findAll();
+            List<Map<String, Object>> professorCandidates = professorPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
                 map.put("nomeCompleto", pref.getUserName());
                 map.put("email", pref.getUserEmail());
-                map.put("turno", pref.getTurno());
-                map.put("disponibilidade", pref.getDisponibilidade());
-                if (pref.getTemasInteresse() != null && !pref.getTemasInteresse().isEmpty()) {
-                    List<String> temasList = Arrays.stream(pref.getTemasInteresse().split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .collect(Collectors.toList());
-                    map.put("temasDeInteresse", temasList);
-                } else {
-                    map.put("temasDeInteresse", new ArrayList<>());
-                }
+                map.put("turno", pref.getShift());
+                map.put("disponibilidade", pref.getAvailability());
+                map.put("temasDeInteresse", pref.getInterestTopics());
                 return map;
             }).collect(Collectors.toList());
 
             // Obtém o registro do usuário logado (aluno) da tabela de preferências de aluno
-            List<StudentPreferences> allAlunoPrefs = preferenciasAlunoService.listarTodos();
-            Optional<StudentPreferences> userAlunoOpt = allAlunoPrefs.stream()
-                    .filter(pref -> pref.getUserId() == userId)
+            Optional<StudentPreferences> userStudentOpt = studentPreferencesService.listarTodos().stream()
+                    .filter(pref -> pref.getUserId().equals(userId))
                     .findFirst();
-            if (!userAlunoOpt.isPresent()) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+            if (!userStudentOpt.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-            StudentPreferences userAluno = userAlunoOpt.get();
+            StudentPreferences student = userStudentOpt.get();
             Map<String, Object> userRecord = new HashMap<>();
-            userRecord.put("id", userAluno.getUserId());
-            userRecord.put("nomeCompleto", userAluno.getUserName());
-            userRecord.put("email", userAluno.getUserEmail());
-            userRecord.put("turno", userAluno.getTurno());
-            userRecord.put("disponibilidade", userAluno.getDisponibilidade());
-            userRecord.put("temasDeInteresse", userAluno.getTemasDeInteresse());
+            userRecord.put("id", student.getUserId());
+            userRecord.put("nomeCompleto", student.getUserName());
+            userRecord.put("email", student.getUserEmail());
+            userRecord.put("turno", student.getTurno());
+            userRecord.put("disponibilidade", student.getDisponibilidade());
+            userRecord.put("temasDeInteresse", student.getTemasDeInteresse());
 
             // Junta os candidatos de professores com o registro do usuário logado
             profiles = new ArrayList<>(professorCandidates);
             profiles.add(userRecord);
         } else {
             // Caso targetRole seja "aluno", usa as preferências de aluno
-            List<StudentPreferences> allPrefs = preferenciasAlunoService.listarTodos();
-            profiles = allPrefs.stream().map(pref -> {
+            profiles = studentPreferencesService.listarTodos().stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
                 map.put("nomeCompleto", pref.getUserName());
@@ -129,52 +118,42 @@ public class ClusteringController {
         Map responseBody = response.getBody();
 
         // Enriquecer as sugestões com a role
-        List<Map<String, Object>> sugestoes = (List<Map<String, Object>>) responseBody.get("sugestoes");
-        for (Map<String, Object> sugestao : sugestoes) {
-            Long uid = ((Number) sugestao.get("id")).longValue();
+        List<Map<String, Object>> suggestions = (List<Map<String, Object>>) responseBody.get("sugestoes");
+        for (Map<String, Object> suggestion : suggestions) {
+            Long uid = ((Number) suggestion.get("id")).longValue();
             Optional<Cluster> clusterOpt = clusterService.findByUserId(uid);
             if (clusterOpt.isPresent()){
-                sugestao.put("userRole", clusterOpt.get().getUserRole());
+                suggestion.put("userRole", clusterOpt.get().getUserRole());
             } else {
-                sugestao.put("userRole", targetRole);
+                suggestion.put("userRole", targetRole);
             }
         }
         // Filtra para retornar somente os perfis com role igual a targetRole
-        List<Map<String, Object>> filteredSugestoes = sugestoes.stream()
-                .filter(s -> s.containsKey("userRole") &&
-                        s.get("userRole") != null &&
-                        targetRole.equalsIgnoreCase(s.get("userRole").toString()))
+        List<Map<String, Object>> filtered = suggestions.stream()
+                .filter(s -> s.containsKey("userRole") && targetRole.equalsIgnoreCase(s.get("userRole").toString()))
                 .collect(Collectors.toList());
-        responseBody.put("sugestoes", filteredSugestoes);
+        responseBody.put("sugestoes", filtered);
         return ResponseEntity.ok(responseBody);
     }
 
-    @GetMapping("/atualizar")
-    public ResponseEntity<?> atualizarClusters(@RequestParam(name="targetRole", defaultValue="aluno") String targetRole) {
+    @GetMapping("/update")
+    public ResponseEntity<?> updateClusters(@RequestParam(name="targetRole", defaultValue="student") String targetRole) {
         List<Map<String, Object>> profiles;
         if (targetRole.equalsIgnoreCase("professor")) {
-            List<TeacherPreferences> allPrefs = preferenciasProfessorService.listarTodos();
-            profiles = allPrefs.stream().map(pref -> {
+            List<ProfessorPreferences> professorPrefs = professorPreferencesService.findAll();
+            profiles = professorPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
                 map.put("nomeCompleto", pref.getUserName());
                 map.put("email", pref.getUserEmail());
-                map.put("turno", pref.getTurno());
-                map.put("disponibilidade", pref.getDisponibilidade());
-                if (pref.getTemasInteresse() != null && !pref.getTemasInteresse().isEmpty()) {
-                    List<String> temasList = Arrays.stream(pref.getTemasInteresse().split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .collect(Collectors.toList());
-                    map.put("temasDeInteresse", temasList);
-                } else {
-                    map.put("temasDeInteresse", new ArrayList<>());
-                }
+                map.put("turno", pref.getShift());
+                map.put("disponibilidade", pref.getAvailability());
+                map.put("temasDeInteresse", pref.getInterestTopics());
                 return map;
             }).collect(Collectors.toList());
         } else {
-            List<StudentPreferences> allPrefs = preferenciasAlunoService.listarTodos();
-            profiles = allPrefs.stream().map(pref -> {
+            List<StudentPreferences> studentPrefs = studentPreferencesService.listarTodos();
+            profiles = studentPrefs.stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", pref.getUserId());
                 map.put("nomeCompleto", pref.getUserName());
