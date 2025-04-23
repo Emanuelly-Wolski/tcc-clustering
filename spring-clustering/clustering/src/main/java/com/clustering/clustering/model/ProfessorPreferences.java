@@ -1,4 +1,3 @@
-// ProfessorPreferences.java
 package com.clustering.clustering.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,22 +18,22 @@ public class ProfessorPreferences {
     @Column(name = "available_for_advising", nullable = false)
     private String availableForAdvising;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "programming_languages_professor", joinColumns = @JoinColumn(name = "professor_preferences_id"))
     @Column(name = "language")
     private List<String> programmingLanguages;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "taught_subjects_professor", joinColumns = @JoinColumn(name = "professor_preferences_id"))
     @Column(name = "subject")
     private List<String> taughtSubjects;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "personal_skills_professor", joinColumns = @JoinColumn(name = "professor_preferences_id"))
     @Column(name = "skill")
     private List<String> personalSkills;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "interest_topics_professor", joinColumns = @JoinColumn(name = "professor_preferences_id"))
     @Column(name = "topic")
     private List<String> interestTopics;

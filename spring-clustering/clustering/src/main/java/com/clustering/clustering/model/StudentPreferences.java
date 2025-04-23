@@ -15,12 +15,12 @@ public class StudentPreferences {
     @Column(name = "turno", nullable = false)
     private String turno;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "linguagens_programacao", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "linguagem")
     private List<String> linguagemProgramacao;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "bancos_dados", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "banco")
     private List<String> bancoDeDados;
@@ -28,12 +28,12 @@ public class StudentPreferences {
     @Column(name = "nivel_experiencia", nullable = false)
     private String nivelDeExperiencia;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "habilidades_pessoais", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "habilidade")
     private List<String> habilidadesPessoais;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "temas_interesse", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "tema")
     private List<String> temasDeInteresse;
@@ -44,7 +44,7 @@ public class StudentPreferences {
     @Column(name = "modalidade_trabalho", nullable = false)
     private String modalidadeTrabalho;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "framework_front", joinColumns = @JoinColumn(name = "preferencias_aluno_id"))
     @Column(name = "framework")
     private List<String> frameworkFront;
@@ -53,7 +53,6 @@ public class StudentPreferences {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    // Novos campos para armazenar o nome e o email do usuário
     @Column(name = "user_name")
     private String userName;
 
