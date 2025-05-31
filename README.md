@@ -1,37 +1,53 @@
-# TCC Clustering
+# 🎓 TCC Clustering
 
 _Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso do TADS - UFPR 2025._
 
-O objetivo é agrupar perfis semelhantes com base em critérios como temas de interesse, turno e disponibilidade, utilizando técnicas de machine learning (Clusterização) para facilitar a formação de equipes compatíveis.
+O objetivo do projeto é agrupar perfis semelhantes com base em critérios como **temas de interesse**, **turno** e **disponibilidade**, utilizando técnicas de Machine Learning (clusterização) para facilitar a formação de equipes compatíveis de TCC.
 
-## Tecnologias Utilizadas
-* Java + Spring Boot – Backend principal
-* Python + FastAPI – Serviço de clusterização
-* React, Material-UI - Frontend
-* PostgreSQL – Banco de dados relacional
-* K-Means – Algoritmo de clusterização
+---
 
-## Como Funciona
-* O usuário preenche suas preferências no sistema.
-* Ao buscar por perfis compatíveis, os dados são enviados para o serviço de clusterização.
-* O algoritmo K-Means agrupa os usuários com base nas semelhanças.
-* O sistema retorna os 3 perfis mais compatíveis com o usuário logado.
-* Os clusters também são salvos em uma tabela específica para futuras análises.
+## 🧰 Tecnologias Utilizadas
 
-## Inicialização dos serviços:
-Para a clusterização funcionar corretamente é preciso:
+- **Java + Spring Boot** – Backend principal  
+- **Python + FastAPI** – Serviço de clusterização  
+- **React + Material-UI** – Frontend  
+- **PostgreSQL** – Banco de dados relacional  
+- **K-Means** – Algoritmo de clusterização
 
-* Instalar 1x no terminal do cluster:
-  pip install fastapi uvicorn pandas scikit-learn
+---
 
-* Sempre que for utilizar o sistema devemos estar dentro da pasta tcc-clustering\clustering-service e digitar o comando abaixo para iniciar o serviço python:
-  uvicorn clustering_service:app --reload --port 8001
+## 🧠 Como Funciona
+
+- O usuário preenche suas preferências no sistema (aluno ou professor).  
+- Ao buscar por perfis compatíveis, os dados são enviados para o serviço de clusterização.  
+- O algoritmo **K-Means** agrupa os usuários com base nas semelhanças.  
+- O sistema retorna os **3 perfis mais compatíveis** com o usuário logado.  
+- Os clusters também são salvos em uma tabela específica no banco de dados para futuras análises.
+
+---
+
+## ⚙️ Inicialização dos Serviços
+
+Para a clusterização funcionar corretamente, é necessário iniciar dois serviços:
+
+### 🔹 1. Serviço de Clusterização (Python)
+
+1. Instale as dependências (apenas uma vez):
+pip install fastapi uvicorn pandas scikit-learn
+
+2. Sempre que for utilizar o sistema, entre no diretório:
+tcc-clustering/clustering-service
+
+3. Inicie o serviço com o comando:
+uvicorn clustering_service:app --reload --port 8001
 
 Explicando o comando:
-* clustering_service: é o nome do arquivo
 
-* app: é o nome da variável que contém o FastAPI() que é a camada que transforma o código Python em uma API REST o tornando acessível a outras partes do sistema.
+- `clustering_service`: nome do arquivo Python  
+- `app`: nome da variável que contém a instância do `FastAPI()`  
+- `--reload`: reinicia automaticamente o servidor ao detectar alterações  
+- `--port 8001`: define a porta de execução do serviço
 
-* --reload: reinicia o servidor automaticamente.
+### 🔹 2. Backend (Spring Boot)
 
-Por fim, deve ser iniciado o Spring boot.
+Após iniciar o serviço Python, inicie o backend Java normalmente
