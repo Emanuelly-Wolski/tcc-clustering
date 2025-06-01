@@ -1,8 +1,8 @@
 # 🎓 TCC Clustering
 
-_Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso do TADS - UFPR 2025._
+_Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso do Tecnologia em Análise e Desenvolvimento de Sistemas - UFPR 2025/01._
 
-O objetivo do projeto é agrupar perfis semelhantes com base em critérios como **temas de interesse**, **turno** e **disponibilidade**, utilizando técnicas de Machine Learning (clusterização) para facilitar a formação de equipes compatíveis de TCC.
+O objetivo desse microsserviço é agrupar perfis semelhantes com base em critérios como **temas de interesse**, **turno** e **disponibilidade**, utilizando técnicas de Machine Learning (clusterização) para facilitar a formação de equipes compatíveis de TCC.
 
 ---
 
@@ -35,7 +35,7 @@ Para a clusterização funcionar corretamente, é necessário iniciar dois servi
 1. Instale as dependências (apenas uma vez):
 pip install fastapi uvicorn pandas scikit-learn
 
-2. Sempre que for utilizar o sistema, entre no diretório:
+2. Sempre que for utilizar o sistema, acesse o diretório:
 tcc-clustering/clustering-service
 
 3. Inicie o serviço com o comando:
@@ -50,4 +50,5 @@ Explicando o comando:
 
 ### 🔹 2. Backend (Spring Boot)
 
-Após iniciar o serviço Python, inicie o backend Java normalmente
+Após iniciar o serviço Python, inicie o backend Java normalmente com:
+./mvnw spring-boot:run
