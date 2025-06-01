@@ -1,10 +1,8 @@
 # 🎓 TCC Clustering
 
-_Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso do Tecnologia em Análise e Desenvolvimento de Sistemas - UFPR 2025/01._
+_Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso de Tecnologia em Análise e Desenvolvimento de Sistemas - UFPR 2025/01._
 
 O objetivo desse microsserviço é agrupar perfis semelhantes com base em critérios como **temas de interesse**, **turno** e **disponibilidade**, utilizando técnicas de Machine Learning (clusterização) para facilitar a formação de equipes compatíveis de TCC.
-
----
 
 ## 🧰 Tecnologias Utilizadas
 
@@ -14,7 +12,6 @@ O objetivo desse microsserviço é agrupar perfis semelhantes com base em crité
 - **PostgreSQL** – Banco de dados relacional  
 - **K-Means** – Algoritmo de clusterização
 
----
 
 ## 🧠 Como Funciona
 
@@ -24,7 +21,6 @@ O objetivo desse microsserviço é agrupar perfis semelhantes com base em crité
 - O sistema retorna os **3 perfis mais compatíveis** com o usuário logado.  
 - Os clusters também são salvos em uma tabela específica no banco de dados para futuras análises.
 
----
 
 ## ⚙️ Inicialização dos Serviços
 
