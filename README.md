@@ -1,4 +1,4 @@
-# 🎓 TCC Clustering
+## 🎓 TCC Clustering
 
 _Este repositório contém o sistema de clusterização de perfis de alunos e professores, desenvolvido como parte do Trabalho de Conclusão de Curso de Tecnologia em Análise e Desenvolvimento de Sistemas - UFPR 2025/01._
 
