@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @CrossOrigin(origins = "*")
 public class ClusteringController {
 
+    // Injeta serviço para acessar preferências de alunos
     @Autowired
     private StudentPreferencesService studentPreferencesService;
 
@@ -36,13 +37,18 @@ public class ClusteringController {
     @Autowired
     private HttpServletRequest httpServletRequest;
 
+    // URL do serviço Python que realiza a clusterização
     private final String clusteringServiceUrl = "http://localhost:8001/clustering";
+    // URL do serviço de autenticação (para buscar a role do usuário)
     private final String userServiceUrl = "http://localhost:3000/api/auth/users/";
 
+    // Endpoint que retorna sugestões de perfis compatíveis com um usuário
     @GetMapping("/suggestions/{userId}")
     public ResponseEntity<?> getSuggestions(@PathVariable Long userId,
                                             @RequestParam(name = "targetRole", defaultValue = "aluno") String targetRole) {
         List<Map<String, Object>> profiles;
+
+        // Se o objetivo for buscar orientador, usa dados de professores + adiciona o aluno logado
         if (targetRole.equalsIgnoreCase("professor")) {
             List<ProfessorPreferences> professorPrefs = professorPreferencesService.findAll();
             List<Map<String, Object>> professorCandidates = professorPrefs.stream().map(pref -> {
@@ -56,6 +62,7 @@ public class ClusteringController {
                 return map;
             }).collect(Collectors.toList());
 
+            // Busca as preferências do aluno logado
             Optional<StudentPreferences> userOpt = studentPreferencesService.listarTodos().stream()
                     .filter(p -> p.getUserId().equals(userId)).findFirst();
             if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
@@ -71,6 +78,8 @@ public class ClusteringController {
 
             profiles = new ArrayList<>(professorCandidates);
             profiles.add(userRecord);
+
+        // Se objetivo for buscar alunos, pega todos os alunos (incluindo o logado)
         } else {
             profiles = studentPreferencesService.listarTodos().stream().map(pref -> {
                 Map<String, Object> map = new HashMap<>();
@@ -84,25 +93,32 @@ public class ClusteringController {
             }).collect(Collectors.toList());
         }
 
+        // Monta o payload para enviar ao Python
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
         payload.put("students", profiles);
 
+        // Prepara headers HTTP com o token, se existir
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String token = httpServletRequest.getHeader("Authorization");
         if (token != null && !token.isEmpty()) headers.set("Authorization", token);
 
+        // Envia requisição POST ao serviço Python (/clustering)
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl, request, Map.class);
         Map responseBody = response.getBody();
 
+         // Recupera sugestões da resposta
         List<Map<String, Object>> sugestoes = (List<Map<String, Object>>) responseBody.get("sugestoes");
+
+        // Para cada sugestão, busca a role do usuário (aluno ou professor)
         for (Map<String, Object> s : sugestoes) {
             Long uid = ((Number) s.get("id")).longValue();
             s.put("userRole", clusterService.findByUserId(uid).map(Cluster::getUserRole).orElse(targetRole));
         }
 
+        // Filtra para garantir que só devolve perfis do papel correto
         List<Map<String, Object>> filtered = sugestoes.stream()
                 .filter(s -> targetRole.equalsIgnoreCase(String.valueOf(s.get("userRole"))))
                 .collect(Collectors.toList());
@@ -111,8 +127,11 @@ public class ClusteringController {
         return ResponseEntity.ok(responseBody);
     }
 
+    // Atualiza os clusters de todos os perfis
     @GetMapping("/update")
     public ResponseEntity<?> updateClusters(@RequestParam(name = "targetRole", defaultValue = "aluno") String targetRole) {
+
+        // Constrói lista de perfis conforme o papel
         List<Map<String, Object>> profiles;
         if (targetRole.equalsIgnoreCase("professor")) {
             profiles = professorPreferencesService.findAll().stream().map(pref -> {
@@ -138,8 +157,9 @@ public class ClusteringController {
             }).collect(Collectors.toList());
         }
 
+        // Monta payload com todos os perfis (userId = 0 pois não queremos sugestões)
         Map<String, Object> payload = new HashMap<>();
-        payload.put("userId", 0); // No update específico, apenas todos para clusterizar
+        payload.put("userId", 0); 
         payload.put("students", profiles);
 
         HttpHeaders headers = new HttpHeaders();
@@ -151,11 +171,14 @@ public class ClusteringController {
         ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl + "/all", request, Map.class);
         List<Map<String, Object>> clustersData = (List<Map<String, Object>>) response.getBody().get("clusters");
 
+        // Extrai a lista de clusters retornados
         List<Cluster> clustersToSave = new ArrayList<>();
         for (Map<String, Object> map : clustersData) {
             Long uid = ((Number) map.get("id")).longValue();
             int clusterNumber = ((Number) map.get("cluster")).intValue();
             String role = null;
+
+            // Busca a role do usuário no serviço de autenticação
             try {
                 HttpHeaders authHeaders = new HttpHeaders();
                 if (token != null && !token.isEmpty()) authHeaders.set("Authorization", token);
@@ -167,8 +190,10 @@ public class ClusteringController {
                 }
             } catch (Exception ignored) {}
 
+            // Ignora administradores
             if ("ADMIN".equalsIgnoreCase(role)) continue;
 
+            // Atualiza ou cria o registro de cluster
             Cluster c = clusterService.findByUserId(uid).orElseGet(Cluster::new);
             c.setUserId(uid);
             c.setClusterId(clusterNumber);
