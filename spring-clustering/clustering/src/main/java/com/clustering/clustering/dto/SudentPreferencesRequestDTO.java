@@ -2,6 +2,9 @@ package com.clustering.clustering.dto;
 
 import java.util.List;
 
+// ----------------- NÃO ESTÁ SENDO UTILIZADO --------------------------------------------------------
+//representa os dados enviados pelo front quando o aluno preenche e envia o formulário de preferências
+
 public record SudentPreferencesRequestDTO(
     String turno,
     List<String> linguagemProgramacao,

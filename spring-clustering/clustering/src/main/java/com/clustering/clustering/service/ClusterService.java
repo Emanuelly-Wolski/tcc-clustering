@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/*
+Essa classe é responsável por manipular dados da entidade Cluster, serve como uma camada intermediária entre o controlador (ClusteringController) e o repositório (ClusterRepository)
+*/
 @Service
 public class ClusterService {
 

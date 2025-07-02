@@ -28,6 +28,8 @@ public class ClusteringController {
     @Autowired
     private ProfessorPreferencesService professorPreferencesService;
 
+    // O RestTemplate é injetado aqui como bean (não precisa instanciar os objetos manualmente), configurado previamente na classe AppConfig.java
+    // Ele permite enviar requisições HTTP para outros microsserviços...
     @Autowired
     private RestTemplate restTemplate;
 
@@ -37,7 +39,7 @@ public class ClusteringController {
     @Autowired
     private HttpServletRequest httpServletRequest;
 
-    // URL do serviço Python que realiza a clusterização
+    // URL do serviço Python que realiza a clusterização, comunicação feita diretamente por meio do restTemplate
     private final String clusteringServiceUrl = "http://localhost:8001/clustering";
     // URL do serviço de autenticação (para buscar a role do usuário)
     private final String userServiceUrl = "http://localhost:3000/api/auth/users/";
@@ -104,12 +106,14 @@ public class ClusteringController {
         String token = httpServletRequest.getHeader("Authorization");
         if (token != null && !token.isEmpty()) headers.set("Authorization", token);
 
-        // Envia requisição POST ao serviço Python (/clustering)
+        // Aqui é criado um objeto que agrupa o que será enviado na requisição para o serviço de clusterização
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl, request, Map.class);
-        Map responseBody = response.getBody();
 
-         // Recupera sugestões da resposta
+        // Envia requisição POST ao serviço Python (/clustering), espera como resposta um JSON, que será convertido para um Map Java automaticamente
+        ResponseEntity<Map> response = restTemplate.postForEntity(clusteringServiceUrl, request, Map.class);
+        Map responseBody = response.getBody(); //Extrai apenas o corpo da resposta, que é onde estão os dados retornados pelo python.
+
+        // Recupera as sugestões (json,lista de objetos) da resposta do serviço Python e converte para uma lista de perfis sugeridos
         List<Map<String, Object>> sugestoes = (List<Map<String, Object>>) responseBody.get("sugestoes");
 
         // Para cada sugestão, busca a role do usuário (aluno ou professor)
@@ -123,6 +127,7 @@ public class ClusteringController {
                 .filter(s -> targetRole.equalsIgnoreCase(String.valueOf(s.get("userRole"))))
                 .collect(Collectors.toList());
 
+        // Atualiza o corpo da resposta com a lista filtrada de sugestões e retorna como resposta final ao front
         responseBody.put("sugestoes", filtered);
         return ResponseEntity.ok(responseBody);
     }
@@ -193,7 +198,7 @@ public class ClusteringController {
             // Ignora administradores
             if ("ADMIN".equalsIgnoreCase(role)) continue;
 
-            // Atualiza ou cria o registro de cluster
+            // Atualiza ou cria o registro de cluster no banco
             Cluster c = clusterService.findByUserId(uid).orElseGet(Cluster::new);
             c.setUserId(uid);
             c.setClusterId(clusterNumber);

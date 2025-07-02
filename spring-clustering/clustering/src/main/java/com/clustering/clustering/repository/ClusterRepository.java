@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/*
+Camada de repositório é utilizada dentro da classe ClusterService para realizar as operações no banco...
+essa interface herda de JpaRepository e fornece todos os métodos básicos prontos para CRUD
+*/
+
 @Repository
 public interface ClusterRepository extends JpaRepository<Cluster, Long> {
 

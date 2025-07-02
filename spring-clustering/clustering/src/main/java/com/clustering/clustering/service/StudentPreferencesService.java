@@ -54,9 +54,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/*
+Essa classe é responsável por manipular dados da entidade de preferências dos alunos, serve como uma camada intermediária entre o controlador (ClusteringController) e o repositório (StudentPreferencesrRepository)
+*/
+
 @Service
 public class StudentPreferencesService {
 
+    //Injeta o repositório que acessa o banco de dados da tabela
     @Autowired
     private StudentPreferencesRepository repository;
 

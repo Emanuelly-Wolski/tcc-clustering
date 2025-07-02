@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+/*
+Essa classe é responsável por manipular dados da entidade de referências dos professores, serve como uma camada intermediária entre o controlador (ClusteringController) e o repositório (ProfessorPreferencesRepository)
+*/
+
 @Service
 public class ProfessorPreferencesService {
 

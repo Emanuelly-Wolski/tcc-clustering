@@ -116,7 +116,9 @@ def get_matching(request: MatchingRequest):
     # Ordena as sugestões por temas em comum (decrescente) e pega os 3 com mais temas em comum
     sugestoes = sugestoes.sort_values(by="temasComuns", ascending=False).head(3)
 
-    # Retorna as sugestões com os dados necessários
+    # Monta a resposta final
+    # Para cada linha do DataFrame 'sugestoes', cria um dicionário com os dados do usuário
+    # Esses dicionários serão retornados e convertidos automaticamente em JSON pelo FastAPI quando enviado como resposta HTTP
     return {
         "sugestoes": [
             {

@@ -2,6 +2,8 @@ package com.clustering.clustering.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+//DTO que representa um usuário do microserviço de login, com ele transferimos dados do usuário (nome, email, role) entre os serviços
+
 public class UserDTO {
     
     private String name;

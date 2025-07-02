@@ -3,6 +3,9 @@ package com.clustering.clustering.dto;
 import java.util.List;
 import com.clustering.clustering.model.StudentPreferences;
 
+// ----------------- NÃO ESTÁ SENDO UTILIZADO -------------------------------------------------------------
+//O retorno que o back-end envia para o front-end depois de salvar ou consultar as preferências de um aluno
+
 public record SudentPreferencesResponseDTO(
     Long id,
     String turno,

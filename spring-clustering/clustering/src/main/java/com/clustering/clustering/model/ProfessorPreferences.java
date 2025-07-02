@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity //entidade JPA (tabela no banco)
 @Table(name = "professor_preferences")
 public class ProfessorPreferences {
 
@@ -18,6 +18,7 @@ public class ProfessorPreferences {
     @Column(name = "available_for_advising", nullable = false)
     private String availableForAdvising;
 
+    /*Os campos que são listas usam @ElementCollection, o que cria tabelas auxiliares no banco (ex: temas_interesse, linguagens_programacao) ligadas por uma chave estrangeira (professor_preferences_id)*/
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "programming_languages_professor", joinColumns = @JoinColumn(name = "professor_preferences_id"))
     @Column(name = "language")
